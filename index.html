@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wallet Warriors — 8-BIT RPG</title>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">⚔️</span>
+        <span>WALLET</span><span class="logo-accent">WARRIORS</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">SKILLS</a></li>
+        <li><a href="#scanner">SCANNER</a></li>
+        <li><a href="#character">PARTY</a></li>
+        <li><a href="#arena">BATTLE</a></li>
+        <li><a href="#leaderboard">RANKING</a></li>
+      </ul>
+      <button class="btn-connect" id="connectBtn" onclick="connectWallet()">
+        <span class="btn-icon">▶</span>
+        <span class="btn-text">CONNECT</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+
+      <!-- Speech bubble -->
+      <div class="hero-speech-bubble">
+        <span class="bubble-text">Hello, traveler...<br/>Your wallet awaits!</span>
+      </div>
+
+      <h1 class="hero-title">
+        YOUR PORTFOLIO<br/>
+        IS YOUR<br/>
+        <span class="pixel-text-gold">CHARACTER.</span>
+      </h1>
+      <p class="hero-subtitle">Connect wallet. Forge identity. Battle traders.</p>
+      <p class="hero-desc">
+        Every trade shapes your stats.<br/>Every hold builds your power.
+      </p>
+
+      <div class="hero-ctas">
+        <button class="btn-pixel-primary" onclick="connectWallet()">
+          ▶ CONNECT WALLET
+        </button>
+        <button class="btn-pixel-secondary" onclick="scrollToSection('arena')">
+          ▷ WATCH BATTLE
+        </button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hstat-box">
+          <span class="hstat-val" data-target="148392">0</span>
+          <span class="hstat-lbl">WARRIORS</span>
+        </div>
+        <div class="hstat-box">
+          <span class="hstat-val" data-target="9241">0</span>
+          <span class="hstat-lbl">BATTLES</span>
+        </div>
+        <div class="hstat-box">
+          <span class="hstat-val" data-target="4.7">0</span>
+          <span class="hstat-lbl">AVG PWR(K)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero character card -->
+    <div class="hero-visual">
+      <div class="rpg-card" id="heroCard">
+        <div class="rpg-card-header">
+          <span class="rpg-class-name">SHADOW TRADER</span>
+          <span class="rpg-level">LV.34</span>
+        </div>
+        <div class="rpg-card-body">
+          <!-- Sprite -->
+          <div class="rpg-sprite-area">
+            <span class="rpg-sprite">🧙</span>
+            <span class="rpg-sprite-name">0x7F3a...9c4E</span>
+            <span class="rpg-sprite-title">Devourer of Dips</span>
+            <div class="rpg-action-btns">
+              <button class="rpg-action-btn">bio</button>
+              <button class="rpg-action-btn">items</button>
+            </div>
+          </div>
+          <!-- Stats -->
+          <div class="rpg-stats-area">
+            <!-- HP bar -->
+            <div class="bar-row">
+              <span class="bar-label hp">HP</span>
+              <div class="pixel-bar" id="heroHpBar">
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+                <div class="pixel-pip hp-pip"></div>
+              </div>
+            </div>
+            <!-- MP bar -->
+            <div class="bar-row">
+              <span class="bar-label mp">MP</span>
+              <div class="pixel-bar" id="heroMpBar">
+                <div class="pixel-pip mp-pip"></div>
+                <div class="pixel-pip mp-pip"></div>
+                <div class="pixel-pip mp-pip"></div>
+                <div class="pixel-pip mp-pip"></div>
+                <div class="pixel-pip mp-pip"></div>
+                <div class="pixel-pip mp-pip"></div>
+              </div>
+            </div>
+            <!-- ATK / DEF / MAG / AGI -->
+            <div class="rpg-stat-grid">
+              <div class="rpg-stat-item">
+                <span class="rpg-stat-key atk">ATK</span>
+                <span class="rpg-stat-num">87</span>
+              </div>
+              <div class="rpg-stat-item">
+                <span class="rpg-stat-key def">DEF</span>
+                <span class="rpg-stat-num">54</span>
+              </div>
+              <div class="rpg-stat-item">
+                <span class="rpg-stat-key agi">AGI</span>
+                <span class="rpg-stat-num">92</span>
+              </div>
+              <div class="rpg-stat-item">
+                <span class="rpg-stat-key lck">LCK</span>
+                <span class="rpg-stat-num">68</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Power score -->
+        <div class="rpg-power-row">
+          <span class="rpg-power-lbl">POWER SCORE</span>
+          <span class="rpg-power-val">3,012</span>
+        </div>
+        <!-- Skills -->
+        <div class="rpg-skills">
+          <div class="rpg-skills-grid">
+            <span class="rpg-skill">buy the dip</span>
+            <span class="rpg-skill">diamond hands</span>
+            <span class="rpg-skill">chart read</span>
+            <span class="rpg-skill">rug detect</span>
+          </div>
+        </div>
+        <!-- Badges -->
+        <div class="rpg-badge-row">
+          <span class="rpg-badge">💎 DIAM. HANDS</span>
+          <span class="rpg-badge">🔥 TOP 1%</span>
+          <span class="rpg-badge">⚡ SPEED</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section" id="features">
+    <div class="section-wrap">
+      <div class="pixel-section-head">
+        <span class="pixel-section-tag">— SKILL TREE —</span>
+        <h2 class="pixel-section-title">CORE ABILITIES</h2>
+        <div class="pixel-divider"></div>
+        <p class="pixel-section-desc">Five skills that transform your portfolio into a weapon.</p>
+      </div>
+      <div class="features-grid">
+
+        <div class="feature-card" style="--feat-color:#7ec8e3">
+          <span class="feat-icon">🔍</span>
+          <div class="feat-title">WALLET SCAN</div>
+          <p class="feat-desc">Deep-scan your on-chain history. Every tx, every hold, every rug — it all becomes your story. AI reads 3 years in seconds.</p>
+          <div class="feat-tags">
+            <span class="feat-tag">3Y HISTORY</span>
+            <span class="feat-tag">50+ CHAINS</span>
+          </div>
+        </div>
+
+        <div class="feature-card" style="--feat-color:#b87fff">
+          <span class="feat-icon">⚔️</span>
+          <div class="feat-title">RPG CHARACTER</div>
+          <p class="feat-desc">Your wallet behavior generates a unique RPG class. Diamond hands = high DEF. Day trader = high AGI. No two wallets alike.</p>
+          <div class="feat-tags">
+            <span class="feat-tag">12 CLASSES</span>
+            <span class="feat-tag">UNIQUE NFT</span>
+          </div>
+        </div>
+
+        <div class="feature-card" style="--feat-color:#f7c948">
+          <span class="feat-icon">🏟️</span>
+          <div class="feat-title">ARENA PVP</div>
+          <p class="feat-desc">Challenge traders to real-time battles. Portfolio performance = combat power. Bet tokens. Rise through the ranks.</p>
+          <div class="feat-tags">
+            <span class="feat-tag">LIVE BATTLES</span>
+            <span class="feat-tag">WAGERING</span>
+          </div>
+        </div>
+
+        <div class="feature-card" style="--feat-color:#7fff6f">
+          <span class="feat-icon">🏆</span>
+          <div class="feat-title">ACHIEVEMENTS</div>
+          <p class="feat-desc">Earn badges minted as soulbound NFTs. "Survived 3 bear markets", "Never sold" — prove your legacy on-chain forever.</p>
+          <div class="feat-tags">
+            <span class="feat-tag">200+ BADGES</span>
+            <span class="feat-tag">SOULBOUND</span>
+          </div>
+        </div>
+
+        <div class="feature-card" style="--feat-color:#ff5555">
+          <span class="feat-icon">📊</span>
+          <div class="feat-title">LEADERBOARDS</div>
+          <p class="feat-desc">Global, regional, and asset-class rankings. Weekly tournaments. Track the most powerful wallets in crypto history.</p>
+          <div class="feat-tags">
+            <span class="feat-tag">GLOBAL RANK</span>
+            <span class="feat-tag">WEEKLY CUP</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WALLET SCANNER ===== -->
+  <section class="scanner-section" id="scanner">
+    <div class="section-wrap">
+      <div class="pixel-section-head">
+        <span class="pixel-section-tag">— INTEL SYSTEM —</span>
+        <h2 class="pixel-section-title">WALLET SCANNER</h2>
+        <div class="pixel-divider"></div>
+        <p class="pixel-section-desc">Scan any wallet. Reveal its battle stats. Expose its legend.</p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="scanner-input-row">
+        <div class="scanner-input-wrap">
+          <span class="scanner-input-prefix">▶</span>
+          <input
+            type="text"
+            id="scanInput"
+            class="scanner-input"
+            placeholder="ENTER WALLET ADDRESS OR ENS..."
+            maxlength="42"
+            spellcheck="false"
+          />
+        </div>
+        <button class="btn-scan" id="scanBtn" onclick="runScan()">
+          🔍 SCAN WALLET
+        </button>
+      </div>
+      <div class="scanner-presets">
+        <span class="preset-label">TRY:</span>
+        <button class="preset-btn" onclick="presetScan('0xDEAD...BEEF')">voidwalker.eth</button>
+        <button class="preset-btn" onclick="presetScan('0xABCD...1234')">cryptoknight.eth</button>
+        <button class="preset-btn" onclick="presetScan('0x7F3a...9c4E')">shadowblade.eth</button>
+      </div>
+
+      <!-- Scanner stage — hidden until scan -->
+      <div class="scanner-stage" id="scannerStage" style="display:none">
+
+        <!-- progress pipeline -->
+        <div class="scan-pipeline" id="scanPipeline">
+          <div class="pipeline-step" id="pStep1">
+            <span class="ps-icon">🔍</span>
+            <span class="ps-label">RESOLVING</span>
+            <span class="ps-status blink">...</span>
+          </div>
+          <div class="pipeline-arrow">▶</div>
+          <div class="pipeline-step" id="pStep2">
+            <span class="ps-icon">⛓</span>
+            <span class="ps-label">ON-CHAIN</span>
+            <span class="ps-status">WAIT</span>
+          </div>
+          <div class="pipeline-arrow">▶</div>
+          <div class="pipeline-step" id="pStep3">
+            <span class="ps-icon">📊</span>
+            <span class="ps-label">ANALYTICS</span>
+            <span class="ps-status">WAIT</span>
+          </div>
+          <div class="pipeline-arrow">▶</div>
+          <div class="pipeline-step" id="pStep4">
+            <span class="ps-icon">⚔</span>
+            <span class="ps-label">RPG CLASS</span>
+            <span class="ps-status">WAIT</span>
+          </div>
+        </div>
+
+        <!-- results grid — hidden during scan -->
+        <div class="scan-results" id="scanResults" style="display:none">
+
+          <!-- LEFT: wallet overview -->
+          <div class="scan-col-left">
+
+            <div class="scan-panel">
+              <div class="scan-panel-title">◆ WALLET OVERVIEW</div>
+              <div class="scan-overview-grid">
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">ADDRESS</span>
+                  <span class="scan-ov-val pixel-text-blue" id="scanAddr">—</span>
+                </div>
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">NET WORTH</span>
+                  <span class="scan-ov-val pixel-text-gold" id="scanNetWorth">—</span>
+                </div>
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">TOTAL PNL</span>
+                  <span class="scan-ov-val" id="scanPnl">—</span>
+                </div>
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">WIN RATE</span>
+                  <span class="scan-ov-val pixel-text-green" id="scanWinRate">—</span>
+                </div>
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">TOTAL TXS</span>
+                  <span class="scan-ov-val" id="scanTxs">—</span>
+                </div>
+                <div class="scan-ov-item">
+                  <span class="scan-ov-label">ACTIVE SINCE</span>
+                  <span class="scan-ov-val" id="scanSince">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- token holdings -->
+            <div class="scan-panel">
+              <div class="scan-panel-title">◆ TOP HOLDINGS</div>
+              <div id="scanTokens" class="scan-token-list"></div>
+            </div>
+
+            <!-- risk meter -->
+            <div class="scan-panel">
+              <div class="scan-panel-title">◆ RISK METER</div>
+              <div class="risk-meter-wrap">
+                <div class="risk-bar-track">
+                  <div class="risk-bar-fill" id="riskBarFill" style="width:0%"></div>
+                </div>
+                <div class="risk-labels">
+                  <span>SAFE</span><span>MED</span><span>HIGH</span><span>DEGEN</span>
+                </div>
+                <div class="risk-score-row">
+                  <span class="risk-score-lbl">RISK SCORE</span>
+                  <span class="risk-score-val" id="riskScore">—</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: RPG card + trade history -->
+          <div class="scan-col-right">
+
+            <!-- generated character card -->
+            <div class="scan-panel">
+              <div class="scan-panel-title">◆ GENERATED CHARACTER</div>
+              <div class="scan-char-wrap">
+                <div class="rpg-card scan-rpg-card" id="scanCharCard">
+                  <div class="rpg-card-header">
+                    <span class="rpg-class-name" id="scanCharClass">—</span>
+                    <span class="rpg-level">LV.<span id="scanCharLevel">—</span></span>
+                  </div>
+                  <div class="rpg-card-body">
+                    <div class="rpg-sprite-area">
+                      <span class="rpg-sprite" id="scanCharEmoji">❓</span>
+                      <span class="rpg-sprite-name" id="scanCharAddr">???</span>
+                      <span class="rpg-sprite-title" id="scanCharTitle">???</span>
+                      <div class="rpg-action-btns">
+                        <button class="rpg-action-btn">bio</button>
+                        <button class="rpg-action-btn">items</button>
+                      </div>
+                    </div>
+                    <div class="rpg-stats-area">
+                      <div class="bar-row">
+                        <span class="bar-label hp">HP</span>
+                        <div class="pixel-bar" id="scanHpBar"></div>
+                      </div>
+                      <div class="bar-row">
+                        <span class="bar-label mp">MP</span>
+                        <div class="pixel-bar" id="scanMpBar"></div>
+                      </div>
+                      <div class="rpg-stat-grid">
+                        <div class="rpg-stat-item"><span class="rpg-stat-key atk">ATK</span><span class="rpg-stat-num" id="scanAtk">—</span></div>
+                        <div class="rpg-stat-item"><span class="rpg-stat-key def">DEF</span><span class="rpg-stat-num" id="scanDef">—</span></div>
+                        <div class="rpg-stat-item"><span class="rpg-stat-key agi">AGI</span><span class="rpg-stat-num" id="scanAgi">—</span></div>
+                        <div class="rpg-stat-item"><span class="rpg-stat-key lck">LCK</span><span class="rpg-stat-num" id="scanLck">—</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rpg-power-row">
+                    <span class="rpg-power-lbl">POWER SCORE</span>
+                    <span class="rpg-power-val" id="scanPowerScore">—</span>
+                  </div>
+                  <div class="rpg-skills">
+                    <div class="rpg-skills-grid" id="scanSkills"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- recent trade history -->
+            <div class="scan-panel">
+              <div class="scan-panel-title">◆ RECENT TRADES</div>
+              <div id="scanTrades" class="scan-trade-list"></div>
+            </div>
+
+          </div>
+
+        </div><!-- /scan-results -->
+      </div><!-- /scanner-stage -->
+    </div>
+  </section>
+
+  <!-- ===== CHARACTER SECTION ===== -->
+  <section class="character-section" id="character">
+    <div class="section-wrap">
+      <div class="pixel-section-head">
+        <span class="pixel-section-tag">— PARTY MEMBER —</span>
+        <h2 class="pixel-section-title">FORGE YOUR LEGEND</h2>
+        <div class="pixel-divider"></div>
+        <p class="pixel-section-desc">Your financial history transforms into a battle-ready character.</p>
+      </div>
+      <div class="char-layout">
+        <div class="char-left">
+          <div class="char-info-panel">
+            <span class="char-stat-title">◆ PORTFOLIO → ATK</span>
+            <p class="char-stat-desc">Total gains from trading define your raw attack power.</p>
+          </div>
+          <div class="char-info-panel">
+            <span class="char-stat-title">◆ HOLD DURATION → DEF</span>
+            <p class="char-stat-desc">Long-term conviction becomes your defensive armor.</p>
+          </div>
+          <div class="char-info-panel">
+            <span class="char-stat-title">◆ TRADE FREQUENCY → AGI</span>
+            <p class="char-stat-desc">Speed of execution translates to agility in battle.</p>
+          </div>
+          <div class="char-info-panel">
+            <span class="char-stat-title">◆ TOKEN DIVERSITY → LCK</span>
+            <p class="char-stat-desc">The breadth of your bets shapes your fortune in combat.</p>
+          </div>
+          <button class="btn-pixel-primary btn-generate" onclick="generateCharacter()">
+            ⚡ GENERATE CHARACTER
+          </button>
+        </div>
+
+        <div class="char-right" id="charCardContainer">
+          <div class="rpg-card" id="mainCharCard">
+            <div class="rpg-card-header">
+              <span class="rpg-class-name" id="charClass">SHADOW TRADER</span>
+              <span class="rpg-level">LV.<span id="charLevel">34</span></span>
+            </div>
+            <div class="rpg-card-body">
+              <div class="rpg-sprite-area">
+                <span class="rpg-sprite" id="charEmoji">🧙</span>
+                <span class="rpg-sprite-name" id="charAddress">0x7F3a...9c4E</span>
+                <span class="rpg-sprite-title" id="charTitle">Devourer of Dips</span>
+                <div class="rpg-action-btns">
+                  <button class="rpg-action-btn">bio</button>
+                  <button class="rpg-action-btn">items</button>
+                </div>
+              </div>
+              <div class="rpg-stats-area">
+                <div class="bar-row">
+                  <span class="bar-label hp">HP</span>
+                  <div class="pixel-bar" id="charHpBar">
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                    <div class="pixel-pip hp-pip"></div>
+                  </div>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-label mp">MP</span>
+                  <div class="pixel-bar" id="charMpBar">
+                    <div class="pixel-pip mp-pip"></div>
+                    <div class="pixel-pip mp-pip"></div>
+                    <div class="pixel-pip mp-pip"></div>
+                    <div class="pixel-pip mp-pip"></div>
+                    <div class="pixel-pip mp-pip"></div>
+                    <div class="pixel-pip mp-pip"></div>
+                  </div>
+                </div>
+                <div class="rpg-stat-grid">
+                  <div class="rpg-stat-item">
+                    <span class="rpg-stat-key atk">ATK</span>
+                    <span class="rpg-stat-num" id="atkVal">87</span>
+                  </div>
+                  <div class="rpg-stat-item">
+                    <span class="rpg-stat-key def">DEF</span>
+                    <span class="rpg-stat-num" id="defVal">54</span>
+                  </div>
+                  <div class="rpg-stat-item">
+                    <span class="rpg-stat-key agi">AGI</span>
+                    <span class="rpg-stat-num" id="agiVal">92</span>
+                  </div>
+                  <div class="rpg-stat-item">
+                    <span class="rpg-stat-key lck">LCK</span>
+                    <span class="rpg-stat-num" id="lckVal">68</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rpg-power-row">
+              <span class="rpg-power-lbl">POWER SCORE</span>
+              <span class="rpg-power-val" id="charPowerScore">3,012</span>
+            </div>
+            <div class="rpg-skills">
+              <div class="rpg-skills-grid" id="charSkills">
+                <span class="rpg-skill">buy the dip</span>
+                <span class="rpg-skill">diamond hands</span>
+                <span class="rpg-skill">chart read</span>
+                <span class="rpg-skill">rug detect</span>
+              </div>
+            </div>
+            <div class="rpg-badge-row" id="charBadges">
+              <span class="rpg-badge">💎 DIAM. HANDS</span>
+              <span class="rpg-badge">🔥 TOP 1%</span>
+              <span class="rpg-badge">⚡ SPEED</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ARENA ===== -->
+  <section class="arena-section" id="arena">
+    <div class="section-wrap">
+      <div class="pixel-section-head">
+        <span class="pixel-section-tag">— BATTLE STAGE —</span>
+        <h2 class="pixel-section-title">THE ARENA</h2>
+        <div class="pixel-divider"></div>
+        <p class="pixel-section-desc">Real-time battles. Watch portfolios collide.</p>
+      </div>
+
+      <div class="arena-stage">
+        <div class="arena-live-badge">
+          <div class="live-dot"></div> LIVE
+        </div>
+
+        <!-- Fighter 1 -->
+        <div class="fighter fighter-left" id="fighter1">
+          <div class="fighter-panel">
+            <div class="fighter-class">MOON CHASER</div>
+            <span class="fighter-sprite">🦅</span>
+            <div class="fighter-name">0xABC1...FF9</div>
+            <div class="fighter-lv">LV. 41</div>
+          </div>
+          <div class="arena-bar-section">
+            <div class="arena-bar-row">
+              <span class="arena-bar-lbl hp">HP</span>
+              <div class="arena-bar-track">
+                <div class="arena-bar-fill hp" id="hpBar1" style="width:100%"></div>
+              </div>
+              <span class="arena-bar-num" id="hp1">100</span>
+            </div>
+            <div class="arena-bar-row">
+              <span class="arena-bar-lbl mp">MP</span>
+              <div class="arena-bar-track">
+                <div class="arena-bar-fill mp" id="mpBar1" style="width:80%"></div>
+              </div>
+              <span class="arena-bar-num">80</span>
+            </div>
+          </div>
+          <div class="fighter-mini-stats">
+            <span>ATK <b>91</b></span>
+            <span>DEF <b>61</b></span>
+            <span>AGI <b>78</b></span>
+          </div>
+        </div>
+
+        <!-- Center -->
+        <div class="arena-center">
+          <div class="vs-badge" id="vsBadge">VS</div>
+          <div class="battle-log" id="battleLog">
+            <div class="log-entry blink">▶ PRESS START TO BATTLE...</div>
+          </div>
+          <button class="btn-battle" id="battleBtn" onclick="startBattle()">
+            ⚔ START BATTLE
+          </button>
+        </div>
+
+        <!-- Fighter 2 -->
+        <div class="fighter fighter-right" id="fighter2">
+          <div class="fighter-panel">
+            <div class="fighter-class">SHADOW TRADER</div>
+            <span class="fighter-sprite">🧙</span>
+            <div class="fighter-name">0x7F3a...9c4E</div>
+            <div class="fighter-lv">LV. 34</div>
+          </div>
+          <div class="arena-bar-section">
+            <div class="arena-bar-row">
+              <span class="arena-bar-lbl hp">HP</span>
+              <div class="arena-bar-track">
+                <div class="arena-bar-fill hp" id="hpBar2" style="width:100%"></div>
+              </div>
+              <span class="arena-bar-num" id="hp2">100</span>
+            </div>
+            <div class="arena-bar-row">
+              <span class="arena-bar-lbl mp">MP</span>
+              <div class="arena-bar-track">
+                <div class="arena-bar-fill mp" id="mpBar2" style="width:60%"></div>
+              </div>
+              <span class="arena-bar-num">60</span>
+            </div>
+          </div>
+          <div class="fighter-mini-stats">
+            <span>ATK <b>87</b></span>
+            <span>DEF <b>54</b></span>
+            <span>AGI <b>92</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent battles -->
+      <div class="recent-battles">
+        <div class="rb-title">◆ BATTLE LOG</div>
+        <div class="battle-list">
+          <div class="battle-item">
+            <span class="bi-winner">🏆 0xAAF2...112</span>
+            <span class="bi-vs">defeated</span>
+            <span class="bi-loser">0x99B1...443</span>
+            <span class="bi-time">2m ago</span>
+          </div>
+          <div class="battle-item">
+            <span class="bi-winner">🏆 0x7F3a...9c4E</span>
+            <span class="bi-vs">defeated</span>
+            <span class="bi-loser">0x55FF...001</span>
+            <span class="bi-time">5m ago</span>
+          </div>
+          <div class="battle-item">
+            <span class="bi-winner">🏆 0xDEAD...BEEF</span>
+            <span class="bi-vs">defeated</span>
+            <span class="bi-loser">0x23CC...7A2</span>
+            <span class="bi-time">11m ago</span>
+          </div>
+          <div class="battle-item">
+            <span class="bi-winner">🏆 0x1111...AAAA</span>
+            <span class="bi-vs">defeated</span>
+            <span class="bi-loser">0xFACE...888</span>
+            <span class="bi-time">18m ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LEADERBOARD ===== -->
+  <section class="leaderboard-section" id="leaderboard">
+    <div class="section-wrap">
+      <div class="pixel-section-head">
+        <span class="pixel-section-tag">— HALL OF FAME —</span>
+        <h2 class="pixel-section-title">WORLD RANKING</h2>
+        <div class="pixel-divider"></div>
+        <p class="pixel-section-desc">The most powerful wallets. Updated every block.</p>
+      </div>
+
+      <div class="lb-tabs">
+        <button class="lb-tab active" onclick="switchTab(this,'global')">🌍 GLOBAL</button>
+        <button class="lb-tab" onclick="switchTab(this,'weekly')">📅 WEEKLY</button>
+        <button class="lb-tab" onclick="switchTab(this,'defi')">🏦 DEFI</button>
+        <button class="lb-tab" onclick="switchTab(this,'nft')">🖼 NFT</button>
+      </div>
+
+      <div class="lb-table">
+        <div class="lb-head">
+          <span>#</span>
+          <span>WARRIOR</span>
+          <span>CLASS</span>
+          <span>PWR SCORE</span>
+          <span>W / L</span>
+          <span>WIN RATE</span>
+          <span>STREAK</span>
+        </div>
+        <div id="lbBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-wrap">
+      <div class="footer-logo">
+        <span>⚔️</span>
+        WALLET <span class="logo-accent">WARRIORS</span>
+      </div>
+      <p class="footer-tagline">Your portfolio. Your legend. Your battlefield.</p>
+      <div class="footer-links">
+        <a href="#">DISCORD</a>
+        <a href="#">TWITTER</a>
+        <a href="#">DOCS</a>
+        <a href="#">AUDIT</a>
+        <a href="#">TERMS</a>
+      </div>
+      <p class="footer-copy">© 2026 WALLET WARRIORS. ALL BATTLES ON-CHAIN.</p>
+      <p class="footer-press-start">▶ PRESS START TO PLAY ◀</p>
+    </div>
+  </footer>
+
+  <!-- ===== WALLET MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>SELECT WALLET</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="wallet-options">
+
+          <!-- RABBY — recommended -->
+          <button class="wallet-option wo-rabby" onclick="selectWallet('Rabby')">
+            <span class="wo-icon">🐰</span>
+            <div class="wo-info">
+              <span class="wo-name">RABBY WALLET</span>
+              <span class="wo-tag" id="rabbyTag">DETECTING...</span>
+            </div>
+            <span class="wo-recommended">★ BEST</span>
+          </button>
+
+          <button class="wallet-option" onclick="selectWallet('MetaMask')">
+            <span class="wo-icon">🦊</span>
+            <div class="wo-info">
+              <span class="wo-name">METAMASK</span>
+              <span class="wo-tag" id="metamaskTag">DETECTING...</span>
+            </div>
+          </button>
+
+          <button class="wallet-option" onclick="selectWallet('Coinbase')">
+            <span class="wo-icon">🔵</span>
+            <div class="wo-info">
+              <span class="wo-name">COINBASE</span>
+              <span class="wo-tag">BROWSER EXT</span>
+            </div>
+          </button>
+
+          <button class="wallet-option" onclick="selectWallet('OKX')">
+            <span class="wo-icon">⭕</span>
+            <div class="wo-info">
+              <span class="wo-name">OKX WALLET</span>
+              <span class="wo-tag">BROWSER EXT</span>
+            </div>
+          </button>
+
+          <button class="wallet-option" onclick="selectWallet('Phantom')">
+            <span class="wo-icon">👻</span>
+            <div class="wo-info">
+              <span class="wo-name">PHANTOM</span>
+              <span class="wo-tag">SOLANA / EVM</span>
+            </div>
+          </button>
+
+        </div>
+        <p class="modal-note">★ RABBY WALLET gives multi-chain support + pre-sign risk alerts</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>"modal-header">
+        <h3>SELECT WALLET</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="wallet-options">
+          <button class="wallet-option wallet-rabby" onclick="selectWallet('Rabby')" id="rabbyBtn">
+            <span class="wo-icon">🐰</span>
+            <div class="wo-info">
+              <span class="wo-name">RABBY WALLET</span>
+              <span class="wo-tag" id="rabbyTag">DETECTING...</span>
+            </div>
+            <span class="wo-recommended">★ REC</span>
+          </button>
+          <button class="wallet-option" onclick="selectWallet('MetaMask')" id="metamaskBtn">
+            <span class="wo-icon">🦊</span>
+            <div class="wo-info">
+              <span class="wo-name">METAMASK</span>
+              <span class="wo-tag" id="metamaskTag">DETECTING...</span>
+            </div>
+          </button>
+          <button class="wallet-option" onclick="selectWallet('WalletConnect')">
+            <span class="wo-icon">🔗</span>
+            <div class="wo-info">
+              <span class="wo-name">WALLETCONNECT</span>
+              <span class="wo-tag">ANY WALLET</span>
+            </div>
+          </button>
+          <button class="wallet-option" onclick="selectWallet('Coinbase')">
+            <span class="wo-icon">🔵</span>
+            <div class="wo-info">
+              <span class="wo-name">COINBASE</span>
+              <span class="wo-tag">MOBILE + DESKTOP</span>
+            </div>
+          </button>
+          <button class="wallet-option" onclick="selectWallet('Phantom')">
+            <span class="wo-icon">👻</span>
+            <div class="wo-info">
+              <span class="wo-name">PHANTOM</span>
+              <span class="wo-tag">SOLANA + ETH</span>
+            </div>
+          </button>
+          <button class="wallet-option" onclick="selectWallet('OKX')">
+            <span class="wo-icon">⭕</span>
+            <div class="wo-info">
+              <span class="wo-name">OKX WALLET</span>
+              <span class="wo-tag">MULTI-CHAIN</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

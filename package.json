@@ -1,0 +1,14 @@
+{
+  "name": "wallet-warriors",
+  "version": "1.0.0",
+  "description": "Web3 Gaming Platform — Your Portfolio Is Your Character",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.19"
+  }
+}
