@@ -622,6 +622,151 @@
         </div>
       </div>
 
+      <!-- ===== UNICITY WAGER PANEL ===== -->
+      <div class="wager-panel" id="wagerPanel">
+        <div class="wager-panel-header">
+          <div class="wager-title-row">
+            <span class="wager-icon">🔗</span>
+            <div>
+              <div class="wager-title">UNICITY BATTLE WAGER</div>
+              <div class="wager-subtitle">Powered by Unicity State Transition SDK · Testnet</div>
+            </div>
+            <div class="wager-badge ws-idle" id="wagerStatusBadge">◆ IDLE</div>
+          </div>
+          <div class="wager-status-msg" id="wagerStatusMsg">Place your wager to lock tokens before the battle starts.</div>
+        </div>
+
+        <div class="wager-body">
+          <!-- ===== UNICITY WALLET CONNECT STRIP ===== -->
+          <div class="uw-strip" id="unicityWalletStrip">
+            <div class="uw-left">
+              <div class="uw-indicator" id="unicityIndicator"></div>
+              <div class="uw-info">
+                <span class="uw-label">UNICITY WALLET</span>
+                <span class="uw-status ws-idle" id="unicityWalletStatus">◆ DISCONNECTED</span>
+              </div>
+              <span class="uw-addr" id="unicityWalletAddr">—</span>
+            </div>
+            <div class="uw-right">
+              <span class="uw-status-msg" id="unicityStatusMsg">Connect your Unicity wallet to sign wager tokens.</span>
+              <button class="btn-uw-connect" id="unicityConnectBtn" onclick="connectUnicityWallet()">
+                🔑 CONNECT UNICITY WALLET
+              </button>
+            </div>
+          </div>
+          <!-- Left: controls -->
+          <div class="wager-controls">
+            <div class="wager-field">
+              <label class="wager-label">WAGER AMOUNT (WAR tokens)</label>
+              <div class="wager-input-row">
+                <input type="number" id="wagerAmount" class="wager-input" value="100" min="10" max="10000" step="10" />
+                <span class="wager-unit">WAR</span>
+              </div>
+              <div class="wager-presets">
+                <button class="wager-preset-btn" onclick="setWagerAmount(50)">50</button>
+                <button class="wager-preset-btn" onclick="setWagerAmount(100)">100</button>
+                <button class="wager-preset-btn" onclick="setWagerAmount(500)">500</button>
+                <button class="wager-preset-btn" onclick="setWagerAmount(1000)">1K</button>
+              </div>
+            </div>
+
+            <div class="wager-players">
+              <div class="wager-player-box">
+                <span class="wp-icon">🦅</span>
+                <div class="wp-info">
+                  <span class="wp-name">MOON CHASER</span>
+                  <span class="wp-addr">0xABC1...FF9</span>
+                </div>
+                <span class="wp-vs">P1</span>
+              </div>
+              <div class="wager-vs-divider">VS</div>
+              <div class="wager-player-box">
+                <span class="wp-icon">🧙</span>
+                <div class="wp-info">
+                  <span class="wp-name">SHADOW TRADER</span>
+                  <span class="wp-addr">0x7F3a...9c4E</span>
+                </div>
+                <span class="wp-vs">P2</span>
+              </div>
+            </div>
+
+            <div class="wager-actions">
+              <button class="btn-wager-mint" id="wagerMintBtn" onclick="wagerMint()">
+                ⚡ LOCK WAGER ON-CHAIN
+              </button>
+              <button class="btn-wager-settle" id="wagerSettleBtn" onclick="wagerSettle()" disabled>
+                🏆 SETTLE TO WINNER
+              </button>
+              <button class="btn-wager-reset" onclick="wagerReset()">
+                ↺ RESET
+              </button>
+            </div>
+
+            <div class="wager-info-grid">
+              <div class="wager-info-item">
+                <span class="wi-label">NETWORK</span>
+                <span class="wi-val pixel-text-teal">UNICITY TESTNET</span>
+              </div>
+              <div class="wager-info-item">
+                <span class="wi-label">TOKEN TYPE</span>
+                <span class="wi-val pixel-text-blue">WAR BATTLE</span>
+              </div>
+              <div class="wager-info-item">
+                <span class="wi-label">TOKEN ID</span>
+                <span class="wi-val pixel-text-gold" id="wagerTokenId">PENDING</span>
+              </div>
+              <div class="wager-info-item">
+                <span class="wi-label">TX HASH</span>
+                <span class="wi-val pixel-text-purple" id="wagerTxHash">PENDING</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: terminal log -->
+          <div class="wager-log-panel">
+            <div class="wager-log-title">◆ UNICITY NODE LOG</div>
+            <div class="wager-log" id="wagerLog">
+              <div class="wager-log-entry">▶ Ready. Waiting for wager...</div>
+            </div>
+            <div class="wager-gateway-row">
+              <span class="wager-gateway-label">GATEWAY</span>
+              <span class="wager-gateway-url">gateway-test.unicity.network</span>
+              <span class="wager-gateway-dot blink"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="wager-how">
+          <div class="wager-how-title">◆ HOW IT WORKS</div>
+          <div class="wager-how-steps">
+            <div class="wager-step">
+              <span class="wstep-num">01</span>
+              <span class="wstep-label">MINT</span>
+              <span class="wstep-desc">WAR tokens locked as off-chain wager via Unicity SDK</span>
+            </div>
+            <div class="wager-step-arrow">▶</div>
+            <div class="wager-step">
+              <span class="wstep-num">02</span>
+              <span class="wstep-label">BATTLE</span>
+              <span class="wstep-desc">Portfolios clash in the arena — outcome determines winner</span>
+            </div>
+            <div class="wager-step-arrow">▶</div>
+            <div class="wager-step">
+              <span class="wstep-num">03</span>
+              <span class="wstep-label">SETTLE</span>
+              <span class="wstep-desc">Token transferred to winner with cryptographic proof</span>
+            </div>
+            <div class="wager-step-arrow">▶</div>
+            <div class="wager-step">
+              <span class="wstep-num">04</span>
+              <span class="wstep-label">VERIFY</span>
+              <span class="wstep-desc">Complete history in the token — fully auditable on-chain</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent battles -->
       <div class="recent-battles">
         <div class="rb-title">◆ BATTLE LOG</div>
@@ -707,6 +852,8 @@
     </div>
   </footer>
 
+  <!-- ===== UNICITY WALLET MODAL ===== -->
+  <!-- No modal needed — autoConnect() opens the Unicity wallet as a popup -->
   <!-- ===== WALLET MODAL ===== -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">

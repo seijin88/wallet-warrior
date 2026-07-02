@@ -1,8 +1,9 @@
 /* ============================================================
    WALLET WARRIORS — MAIN.JS  (8-bit JRPG Edition)
-   Features: Wallet Scanner + Rabby / multi-wallet connect
+   Features: Wallet Scanner + Rabby / multi-wallet connect + Unicity Wager
    ============================================================ */
 import './styles.css';
+import { WagerSession, wagerUI, unicityWallet, unicityWalletUI } from './wager.js';
 
 // ============================================================
 // STATE
@@ -732,6 +733,108 @@ function initStars() {
 // MODAL OUTSIDE CLICK
 // ============================================================
 $('modalOverlay').addEventListener('click', e => { if (e.target === $('modalOverlay')) closeModal(); });
+
+// ============================================================
+// UNICITY WALLET — SPHERE CONNECT (popup flow)
+// ============================================================
+async function connectUnicityWallet() {
+  if (unicityWallet.isConnected()) {
+    await unicityWallet.disconnect();
+    return;
+  }
+  try {
+    await unicityWallet.connect();
+  } catch (err) {
+    console.warn('[UniWallet] connect failed:', err.message);
+  }
+}
+window.connectUnicityWallet = connectUnicityWallet;
+
+// Auto-reconnect on page load if we have a saved session
+(async () => {
+  const saved = sessionStorage.getItem('ww-sphere-session');
+  if (saved) {
+    try {
+      await unicityWallet.connect();   // silent=true because session exists
+    } catch (_) {
+      sessionStorage.removeItem('ww-sphere-session');
+    }
+  }
+})();
+
+// ============================================================
+// UNICITY WAGER FUNCTIONS
+// ============================================================
+let _wagerSession = null;
+
+function setWagerAmount(val) {
+  const el = document.getElementById('wagerAmount');
+  if (el) el.value = val;
+}
+window.setWagerAmount = setWagerAmount;
+
+async function wagerMint() {
+  const amount = parseInt(document.getElementById('wagerAmount')?.value || '100', 10);
+  if (isNaN(amount) || amount < 10) {
+    wagerUI.setStatus('error', 'Enter a valid wager amount (min 10 WAR).');
+    return;
+  }
+
+  // Disable mint button during operation
+  const mintBtn   = document.getElementById('wagerMintBtn');
+  const settleBtn = document.getElementById('wagerSettleBtn');
+  if (mintBtn) mintBtn.disabled = true;
+
+  _wagerSession = new WagerSession();
+  const result = await _wagerSession.mint(amount, '0xABC1...FF9', '0x7F3a...9c4E');
+
+  if (result.success) {
+    // Show token id
+    const tokenEl = document.getElementById('wagerTokenId');
+    if (tokenEl) tokenEl.textContent = result.tokenId.slice(0, 14) + '...';
+    // Enable settle button
+    if (settleBtn) settleBtn.disabled = false;
+  } else {
+    if (mintBtn) mintBtn.disabled = false;
+  }
+}
+window.wagerMint = wagerMint;
+
+async function wagerSettle() {
+  if (!_wagerSession || _wagerSession.status !== 'minted') {
+    wagerUI.setStatus('error', 'Mint a wager token first.');
+    return;
+  }
+
+  const settleBtn = document.getElementById('wagerSettleBtn');
+  if (settleBtn) settleBtn.disabled = true;
+
+  // Determine winner from last battle result (hp1 vs hp2)
+  const winner = hp1 >= hp2 ? 'player1' : 'player2';
+  const result = await _wagerSession.settleToWinner(winner);
+
+  if (result.success) {
+    const txEl = document.getElementById('wagerTxHash');
+    if (txEl && result.txHash) txEl.textContent = result.txHash.slice(0, 14) + '...';
+  } else {
+    if (settleBtn) settleBtn.disabled = false;
+  }
+}
+window.wagerSettle = wagerSettle;
+
+function wagerReset() {
+  _wagerSession = null;
+  wagerUI.reset();
+  const mintBtn   = document.getElementById('wagerMintBtn');
+  const settleBtn = document.getElementById('wagerSettleBtn');
+  if (mintBtn)   mintBtn.disabled   = false;
+  if (settleBtn) settleBtn.disabled = true;
+  const tokenEl = document.getElementById('wagerTokenId');
+  const txEl    = document.getElementById('wagerTxHash');
+  if (tokenEl) tokenEl.textContent = 'PENDING';
+  if (txEl)    txEl.textContent    = 'PENDING';
+}
+window.wagerReset = wagerReset;
 
 // ============================================================
 // INIT
