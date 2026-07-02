@@ -22,7 +22,8 @@ import { DirectAddress }           from '@unicitylabs/state-transition-sdk/lib/a
 import { RootTrustBase }           from '@unicitylabs/state-transition-sdk/lib/bft/RootTrustBase.js';
 
 // Sphere SDK — wallet connect
-import { autoConnect, SPHERE_NETWORKS } from '@unicitylabs/sphere-sdk/connect/browser';
+import { autoConnect }     from '@unicitylabs/sphere-sdk/connect/browser';
+import { SPHERE_NETWORKS } from '@unicitylabs/sphere-sdk/connect';
 
 // ============================================================
 // CONFIG
