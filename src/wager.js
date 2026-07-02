@@ -249,152 +249,20 @@ export const unicityWalletUI = {
 };
 
 // ============================================================
-// CONFIG
-// ============================================================
-const GATEWAY_URL    = 'https://gateway-test.unicity.network';
-const WAGER_TYPE_HEX = 'aaff0011deadbeef0102030405060708090a0b0c0d0e0f10';
-
-// ============================================================
-// HELPERS
-// ============================================================
-function hexToBytes(hex) {
-  const h = hex.replace(/^0x/, '');
-  const arr = new Uint8Array(h.length / 2);
-  for (let i = 0; i < arr.length; i++) arr[i] = parseInt(h.slice(i * 2, i * 2 + 2), 16);
-  return arr;
-}
-
-function randomBytes(n) {
-  const arr = new Uint8Array(n);
-  crypto.getRandomValues(arr);
-  return arr;
-}
-
-const delay = (ms) => new Promise(r => setTimeout(r, ms));
-
-// ============================================================
-// SDK CLIENT — singleton
-// ============================================================
-let _stc = null;
-function getStc() {
-  if (!_stc) _stc = new StateTransitionClient(new AggregatorClient(GATEWAY_URL));
-  return _stc;
-}
-
-// ============================================================
-// POLL INCLUSION PROOF
-// ============================================================
-async function pollProof(requestId, timeoutMs = 30_000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    try {
-      const res = await getStc().getInclusionProof(requestId);
-      if (res?.inclusionProof) return res;
-    } catch (_) { /* not ready */ }
-    await delay(2000);
-  }
-  return null;
-}
-
-// ============================================================
-// TRUST BASE — fetch from gateway or use stub for testnet
-// ============================================================
-async function fetchTrustBase() {
-  try {
-    const res = await fetch(`${GATEWAY_URL}/api/trust-base`);
-    if (res.ok) return RootTrustBase.fromJSON(await res.json());
-  } catch (_) { /* fall through */ }
-  // Minimal stub for testnet demo — skips full BFT verification
-  return new RootTrustBase(1n, 2, 1n, 1n, [], 0n,
-    new Uint8Array(32), null, null, new Map());
-}
-
-// ============================================================
-// UNICITY WALLET CONNECTION
-// Stores the user's real SigningService derived from their key
-// ============================================================
-export const unicityWallet = {
-  signer:    null,   // SigningService instance
-  pubKeyHex: null,   // compressed public key as hex string
-  address:   null,   // display address (first 6 + last 4 of pubkey hex)
-
-  /** Connect using a raw hex private key pasted from Unicity web wallet */
-  connect(privateKeyHex) {
-    const cleaned = privateKeyHex.trim().replace(/^0x/, '');
-    if (!/^[0-9a-fA-F]{64}$/.test(cleaned)) {
-      throw new Error('Invalid private key — must be 64 hex characters');
-    }
-    const privBytes = hexToBytes(cleaned);
-    const signer    = new SigningService(privBytes);
-    const pubKey    = signer.publicKey; // 33-byte compressed
-    const pubHex    = Array.from(pubKey).map(b => b.toString(16).padStart(2,'0')).join('');
-
-    this.signer    = signer;
-    this.pubKeyHex = pubHex;
-    this.address   = pubHex.slice(0, 8) + '...' + pubHex.slice(-6).toUpperCase();
-
-    // Update UI
-    unicityWalletUI.setConnected(this.address);
-    return this.address;
-  },
-
-  disconnect() {
-    this.signer    = null;
-    this.pubKeyHex = null;
-    this.address   = null;
-    unicityWalletUI.setDisconnected();
-  },
-
-  isConnected() { return this.signer !== null; },
-};
-
-// ============================================================
-// UNICITY WALLET UI CONTROLLER
-// ============================================================
-export const unicityWalletUI = {
-  setConnected(address) {
-    const statusEl  = document.getElementById('unicityWalletStatus');
-    const addrEl    = document.getElementById('unicityWalletAddr');
-    const connectBtn = document.getElementById('unicityConnectBtn');
-    const indicator = document.getElementById('unicityIndicator');
-    if (statusEl)   statusEl.textContent  = 'CONNECTED';
-    if (statusEl)   statusEl.className    = 'uw-status connected';
-    if (addrEl)     addrEl.textContent    = address;
-    if (connectBtn) { connectBtn.textContent = '✕ DISCONNECT'; connectBtn.className = 'btn-uw-disconnect'; }
-    if (indicator)  indicator.className   = 'uw-indicator on';
-    // Enable the wager mint button
-    const mintBtn = document.getElementById('wagerMintBtn');
-    if (mintBtn) mintBtn.disabled = false;
-  },
-
-  setDisconnected() {
-    const statusEl   = document.getElementById('unicityWalletStatus');
-    const addrEl     = document.getElementById('unicityWalletAddr');
-    const connectBtn = document.getElementById('unicityConnectBtn');
-    const indicator  = document.getElementById('unicityIndicator');
-    if (statusEl)   statusEl.textContent  = 'NOT CONNECTED';
-    if (statusEl)   statusEl.className    = 'uw-status';
-    if (addrEl)     addrEl.textContent    = '—';
-    if (connectBtn) { connectBtn.textContent = '🔑 CONNECT UNICITY'; connectBtn.className = 'btn-uw-connect'; }
-    if (indicator)  indicator.className   = 'uw-indicator';
-  },
-};
-
-// ============================================================
 // WAGER SESSION
 // ============================================================
 export class WagerSession {
   constructor() {
-    this.id        = Array.from(randomBytes(4)).map(b => b.toString(16).padStart(2,'0')).join('');
-    this.amount    = 0;
-    this.status    = 'idle';
-    this.tokenId   = null;
-    this._token    = null;   // live Token object
-    this.signer1   = null;
-    this.signer2   = null;
-    this.txHash    = null;
-    this.error     = null;
-    this.log       = [];
+    this.id      = Array.from(randomBytes(4)).map(b => b.toString(16).padStart(2,'0')).join('');
+    this.amount  = 0;
+    this.status  = 'idle';
+    this.tokenId = null;
+    this._token  = null;
+    this.signer1 = null;
+    this.signer2 = null;
+    this.txHash  = null;
+    this.error   = null;
+    this.log     = [];
   }
 
   _log(msg) {
@@ -403,9 +271,7 @@ export class WagerSession {
     wagerUI.refreshLog(this.log);
   }
 
-  // -----------------------------------------------------------
   // MINT — lock wager token on Unicity testnet
-  // -----------------------------------------------------------
   async mint(amount, p1Label, p2Label) {
     this.amount = amount;
     this.status = 'minting';
@@ -421,7 +287,6 @@ export class WagerSession {
         this.signer1 = new SigningService(SigningService.generatePrivateKey());
         this._log(`No wallet connected — using ephemeral key`);
       }
-      // Opponent always gets ephemeral key
       this.signer2 = new SigningService(SigningService.generatePrivateKey());
 
       const tokenId   = new TokenId(randomBytes(32));
@@ -431,26 +296,15 @@ export class WagerSession {
       this.tokenId = tokenId.toString();
       this._log(`Token ID: ${this.tokenId.slice(0, 24)}...`);
 
-      // Build predicate for player 1 (initial owner)
-      const predicate = await UnmaskedPredicate.create(
-        tokenId, tokenType, this.signer1, HashAlgorithm.SHA256, salt
-      );
+      const predicate    = await UnmaskedPredicate.create(tokenId, tokenType, this.signer1, HashAlgorithm.SHA256, salt);
       const predicateRef = await predicate.getReference();
       const recipient    = await DirectAddress.create(await predicateRef.calculateHash());
 
-      // Encode wager metadata
       const tokenData = new TextEncoder().encode(JSON.stringify({
-        game: 'WalletWarriors', wager: amount,
-        p1: p1Label, p2: p2Label, ts: Date.now(),
+        game: 'WalletWarriors', wager: amount, p1: p1Label, p2: p2Label, ts: Date.now(),
       }));
 
-      // Build MintTransactionData
-      // signature: create(tokenId, tokenType, tokenData, coinData, recipient, salt, recipientDataHash, reason)
-      const mintData = await MintTransactionData.create(
-        tokenId, tokenType, tokenData, null, recipient, salt, null, null
-      );
-
-      // Create + submit commitment
+      const mintData   = await MintTransactionData.create(tokenId, tokenType, tokenData, null, recipient, salt, null, null);
       const commitment = await MintCommitment.create(mintData);
       this._log(`Submitting commitment to ${GATEWAY_URL}...`);
 
@@ -458,13 +312,10 @@ export class WagerSession {
       this._log(`Commitment accepted ✓  ID: ${submitResp.requestId?.toString()?.slice(0,18)}...`);
       this._log(`Waiting for inclusion proof (~2–5s)...`);
 
-      // Poll for proof
       const proofResp = await pollProof(submitResp.requestId);
       if (!proofResp) throw new Error('Timed out — aggregator did not return proof');
-
       this._log(`Inclusion proof received ✓`);
 
-      // Finalize token
       const mintTx     = commitment.toTransaction(proofResp.inclusionProof);
       const trustBase  = await fetchTrustBase();
       const tokenState = new TokenState(predicate, null);
@@ -473,7 +324,6 @@ export class WagerSession {
 
       this._log(`Token minted (${this._token.toCBOR().length}B CBOR) ✓`);
       wagerUI.setStatus('minted', `${amount} WAR locked on-chain. Battle ready!`);
-
       return { success: true, tokenId: this.tokenId };
 
     } catch (err) {
@@ -486,58 +336,44 @@ export class WagerSession {
     }
   }
 
-  // -----------------------------------------------------------
   // SETTLE — transfer token to battle winner
-  // -----------------------------------------------------------
   async settle(winnerIsP1) {
     if (!this._token) return { success: false, error: 'No token minted' };
 
-    this.status  = 'settling';
-    const who    = winnerIsP1 ? 'PLAYER 1 🦅' : 'PLAYER 2 🧙';
+    this.status = 'settling';
+    const who   = winnerIsP1 ? 'PLAYER 1 🦅' : 'PLAYER 2 🧙';
     wagerUI.setStatus('settling', `Transferring ${this.amount} WAR → ${who}...`);
     this._log(`Settling → winner is ${who}`);
 
     try {
       const winnerSigner = winnerIsP1 ? this.signer1 : this.signer2;
-      const tokenId      = this._token.id;
-      const tokenType    = this._token.type;
       const salt         = randomBytes(32);
 
-      // Build predicate for winner
-      const winnerPred  = await UnmaskedPredicate.create(
-        tokenId, tokenType, winnerSigner, HashAlgorithm.SHA256, salt
-      );
+      const winnerPred = await UnmaskedPredicate.create(this._token.id, this._token.type, winnerSigner, HashAlgorithm.SHA256, salt);
       const winnerRef  = await winnerPred.getReference();
       const winnerAddr = await DirectAddress.create(await winnerRef.calculateHash());
+      const msg        = new TextEncoder().encode(JSON.stringify({ winner: who, ts: Date.now() }));
 
-      const msg = new TextEncoder().encode(JSON.stringify({ winner: who, ts: Date.now() }));
-
-      // TransferCommitment.create(token, recipient, salt, recipientDataHash, message, signingService)
-      const commitment = await TransferCommitment.create(
-        this._token, winnerAddr, salt, null, msg, this.signer1
-      );
-
+      const commitment = await TransferCommitment.create(this._token, winnerAddr, salt, null, msg, this.signer1);
       this._log(`Transfer commitment submitted...`);
+
       const submitResp = await getStc().submitTransferCommitment(commitment);
       this._log(`Accepted ✓  ID: ${submitResp.requestId?.toString()?.slice(0,18)}...`);
       this._log(`Waiting for transfer proof...`);
 
       const proofResp = await pollProof(submitResp.requestId);
       if (!proofResp) throw new Error('Timed out — no transfer proof');
-
       this._log(`Transfer confirmed on Unicity testnet ✓`);
 
-      // Update token to new owner state
       const transferTx = commitment.toTransaction(proofResp.inclusionProof);
       const trustBase  = await fetchTrustBase();
       const newState   = new TokenState(winnerPred, null);
       this._token      = await this._token.update(trustBase, newState, transferTx);
 
-      this.txHash  = submitResp.requestId?.toString();
-      this.status  = 'settled';
+      this.txHash = submitResp.requestId?.toString();
+      this.status = 'settled';
       this._log(`${this.amount} WAR delivered to ${who} ✓`);
       wagerUI.setStatus('settled', `Wager settled! ${this.amount} WAR → ${who}`);
-
       return { success: true, txHash: this.txHash };
 
     } catch (err) {
@@ -577,9 +413,7 @@ export const wagerUI = {
   refreshLog(entries) {
     const el = document.getElementById('wagerLog');
     if (!el) return;
-    el.innerHTML = entries.slice(0, 10)
-      .map(e => `<div class="wager-log-entry">${e}</div>`)
-      .join('');
+    el.innerHTML = entries.slice(0, 10).map(e => `<div class="wager-log-entry">${e}</div>`).join('');
   },
 
   reset() {
